@@ -1,4 +1,6 @@
 import akshare as ak
+
+# run for every trade date.... first date is 20191220
 option_shfe_daily_one, option_shfe_daily_two = ak.option_shfe_daily(symbol="黄金期权", trade_date="20191220")
 print("=======SHFE #1=======")
 print(option_shfe_daily_one)
