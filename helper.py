@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 def plotGraph(x, y, x_name, y_name):
   fig = plt.figure()
-  plt.plot(y, y)
+  plt.plot(x, y)
   plt.title(f'{x_name} vs {y_name}')
   plt.xlabel(x_name)
   plt.xticks(rotation=45)
