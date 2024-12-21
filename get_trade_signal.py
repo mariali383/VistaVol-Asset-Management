@@ -54,10 +54,10 @@ warnings.filterwarnings("ignore")
 def get_trading_signal(option_df: pd.DataFrame, 
                        futures_df: pd.DataFrame, 
                        paras: pd.DataFrame, 
-                       start_time: pd.Timestamp):
+                       equity: int):
     
     # 原点价格
-    original_price = futures_df[futures_df['time'] < start_time]['close'].iloc[-1]
+    original_price = futures_df['close'].iloc[0]
 
     target = pd.DataFrame()
     target['time'] = futures_df['time']
@@ -119,6 +119,8 @@ def get_trading_signal(option_df: pd.DataFrame,
         # vega
         prob += pulp.lpSum([daily_available_option['vega'].iloc[i] * variables[i] for i in range(len(daily_available_option))]) >= target_row['target_vega'][0]
         prob += pulp.lpSum([daily_available_option['vega'].iloc[i] * variables[i] for i in range(len(daily_available_option))]) <= target_row['target_vega'][1]
+        # 总开仓保证金占用限制，这里限制为20%，且简化为每手期货、期权（看涨、看跌）的保证金统一记为8%
+        prob += pulp.lpSum([abs(i) for i in variables]) * original_price * 1000 * 0.08 <= equity * 0.2
 
         prob.solve(pulp.PULP_CBC_CMD(msg=0))
 
